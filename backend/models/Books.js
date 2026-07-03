@@ -26,6 +26,10 @@ const bookSchema = new mongoose.Schema(
       enum: ["New", "Like New", "Good", "Fair", "Poor"],
       default: "Good",
     },
+    price: {
+      type: Number,
+      required: true,
+  },
     availability: {
       type: Boolean,
       default: true,

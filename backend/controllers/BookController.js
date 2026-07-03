@@ -2,9 +2,9 @@ const Book = require("../models/Books");
 
 exports.addBook = async (req, res) => {
   try {
-    const { title, author, genre, description, condition } = req.body;
+    const { title, author, genre, description,price, condition } = req.body;
 
-    if (!title || !author || !genre) {
+    if (!title || !author || !genre || !price) {
       return res.status(400).json({
         success: false,
         message: "Title, author and genre are required",
@@ -17,6 +17,7 @@ exports.addBook = async (req, res) => {
       genre,
       description,
       condition,
+      price,
       owner: req.user.id,
     });
 
