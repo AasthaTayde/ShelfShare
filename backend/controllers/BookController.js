@@ -147,3 +147,53 @@ exports.deleteBook = async (req, res) => {
     });
   }
 };
+exports.searchBooks = async (req, res) => {
+  try {
+    const { title, author, genre } = req.query;
+
+    let filter = {};
+
+    if (title) {
+      filter.title = { $regex: title, $options: "i" };
+    }
+
+    if (author) {
+      filter.author = { $regex: author, $options: "i" };
+    }
+
+    if (genre) {
+      filter.genre = { $regex: genre, $options: "i" };
+    }
+
+    const books = await Book.find(filter).populate("owner", "name email");
+
+    res.status(200).json({
+      success: true,
+      count: books.length,
+      books,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+exports.myBooks = async (req, res) => {
+  try {
+    const books = await Book.find({
+      owner: req.user.id,
+    });
+
+    res.status(200).json({
+      success: true,
+      count: books.length,
+      books,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
