@@ -68,16 +68,36 @@ exports.addBook = async (req, res) => {
     });
   }
 };
-
 exports.getAllBooks = async (req, res) => {
   try {
-    const books = await Book.find().populate("owner", "name email");
+
+    // Current page (default = 1)
+    const page = parseInt(req.query.page) || 1;
+
+    // Books per page (default = 12)
+    const limit = parseInt(req.query.limit) || 12;
+
+    // Skip previous books
+    const skip = (page - 1) * limit;
+
+    // Total number of books
+    const totalBooks = await Book.countDocuments();
+
+    // Fetch books for current page
+    const books = await Book.find()
+      .populate("owner", "name email")
+      .skip(skip)
+      .limit(limit);
 
     res.status(200).json({
       success: true,
+      currentPage: page,
+      totalPages: Math.ceil(totalBooks / limit),
+      totalBooks,
       count: books.length,
       books,
     });
+
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -85,6 +105,7 @@ exports.getAllBooks = async (req, res) => {
     });
   }
 };
+
 
 exports.getBookById = async (req, res) => {
   try {
