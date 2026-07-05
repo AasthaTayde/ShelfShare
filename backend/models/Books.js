@@ -12,6 +12,16 @@ const bookSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    bookImage: {
+      url: {
+          type: String,
+          default: ""
+      },
+      public_id: {
+          type: String,
+          default: ""
+      }
+  },
     genre: {
       type: String,
       required: true,
@@ -34,6 +44,7 @@ const bookSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+  
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

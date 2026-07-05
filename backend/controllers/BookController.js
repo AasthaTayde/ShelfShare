@@ -1,14 +1,45 @@
 const Book = require("../models/Books");
+const uploadToCloudinary = require("../utils/CloudinaryUpload");
+const cloudinary = require("../config/cloudinary");
+const streamifier = require("streamifier");
+
 
 exports.addBook = async (req, res) => {
   try {
-    const { title, author, genre, description,price, condition } = req.body;
+
+    console.log("BODY:", req.body);
+    console.log("FILE:", req.file);
+    const {
+      title,
+      author,
+      genre,
+      description,
+      condition,
+      price,
+    } = req.body;
 
     if (!title || !author || !genre || !price) {
       return res.status(400).json({
         success: false,
-        message: "Title, author and genre are required",
+        message: "Title, Author, Genre and Price are required",
       });
+    }
+
+    let imageData = {
+      url: "",
+      public_id: "",
+    };
+
+    if (req.file) {
+      const result = await uploadToCloudinary(
+        req.file.buffer,
+        "ShelfShare_Books"
+      );
+
+      imageData = {
+        url: result.secure_url,
+        public_id: result.public_id,
+      };
     }
 
     const book = await Book.create({
@@ -18,6 +49,9 @@ exports.addBook = async (req, res) => {
       description,
       condition,
       price,
+
+      bookImage: imageData,
+
       owner: req.user.id,
     });
 
@@ -26,6 +60,7 @@ exports.addBook = async (req, res) => {
       message: "Book added successfully",
       book,
     });
+
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -95,6 +130,26 @@ exports.updateBook = async (req, res) => {
       });
     }
 
+    // If a new image is uploaded
+    if (req.file) {
+
+      // Delete old image from Cloudinary
+      if (book.bookImage && book.bookImage.public_id) {
+        await cloudinary.uploader.destroy(book.bookImage.public_id);
+      }
+
+      // Upload new image
+      const result = await uploadToCloudinary(
+        req.file.buffer,
+        "ShelfShare_Books"
+      );
+
+      req.body.bookImage = {
+        url: result.secure_url,
+        public_id: result.public_id,
+      };
+    }
+
     const updatedBook = await Book.findByIdAndUpdate(
       req.params.id,
       req.body,
@@ -109,6 +164,7 @@ exports.updateBook = async (req, res) => {
       message: "Book updated successfully",
       book: updatedBook,
     });
+
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -135,12 +191,19 @@ exports.deleteBook = async (req, res) => {
       });
     }
 
-    await Book.findByIdAndDelete(req.params.id);
+    // Delete image from Cloudinary
+    if (book.bookImage && book.bookImage.public_id) {
+      await cloudinary.uploader.destroy(book.bookImage.public_id);
+    }
+
+    // Delete book from MongoDB
+    await Book.deleteOne();
 
     res.status(200).json({
       success: true,
       message: "Book deleted successfully",
     });
+
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -148,6 +211,8 @@ exports.deleteBook = async (req, res) => {
     });
   }
 };
+
+
 exports.searchBooks = async (req, res) => {
   try {
     const { title, author, genre } = req.query;

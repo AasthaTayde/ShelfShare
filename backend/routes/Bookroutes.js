@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const upload = require("../middleware/upload");
 
 const auth = require("../middleware/midauth");
 
@@ -13,8 +14,8 @@ const {
   myBooks,
 } = require("../controllers/BookController");
 
-router.post("/", auth, addBook);
 
+router.post("/add",auth,upload.single("bookImage"),addBook);
 router.get("/", getAllBooks);
 
 router.get("/search", searchBooks);
@@ -23,7 +24,7 @@ router.get("/mybooks", auth, myBooks);
 
 router.get("/:id", getBookById);
 
-router.put("/:id", auth, updateBook);
+router.put("/:id",auth,upload.single("bookImage"),updateBook);
 
 router.delete("/:id", auth, deleteBook);
 
