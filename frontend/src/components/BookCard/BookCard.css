@@ -1,0 +1,111 @@
+.book-card{
+
+    width:100%;
+
+    background:white;
+
+    border-radius:12px;
+
+    overflow:hidden;
+
+    box-shadow:0 4px 15px rgba(0,0,0,0.08);
+
+    transition:0.3s;
+
+}
+
+.book-card:hover{
+
+    transform:translateY(-6px);
+
+}
+
+.book-image{
+
+    width:100%;
+
+    height:290px;
+
+    object-fit:cover;
+
+}
+
+.book-details{
+
+    padding:15px;
+
+}
+
+.book-details h3{
+
+    font-size:1.2rem;
+
+    color:#1F2937;
+
+    margin-bottom:8px;
+
+}
+
+.author{
+
+    color:#6B7280;
+
+    margin-bottom:10px;
+
+}
+
+.genre{
+
+    background:#FED7AA;
+
+    color:#9A3412;
+
+    padding:5px 12px;
+
+    border-radius:20px;
+
+    font-size:.85rem;
+
+}
+
+.condition{
+
+    margin-top:15px;
+
+    color:#4B5563;
+
+}
+
+.price{
+
+    margin:18px 0;
+
+    color:#EA580C;
+
+}
+
+.view-btn{
+
+    width:100%;
+
+    padding:12px;
+
+    border:none;
+
+    border-radius:8px;
+
+    background:#EA580C;
+
+    color:white;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.view-btn:hover{
+
+    background:#C2410C;
+
+}

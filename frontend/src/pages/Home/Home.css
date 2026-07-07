@@ -1,0 +1,22 @@
+.home {
+    width: 100%;
+  }
+  
+  .books-section {
+    width: 90%;
+    max-width: 1300px;
+    margin: auto;
+    padding-bottom: 60px;
+  }
+  
+  .books-section h2 {
+    font-size: 2rem;
+    color: #1f2937;
+    margin-bottom: 30px;
+  }
+  
+  .books-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 30px;
+  }
