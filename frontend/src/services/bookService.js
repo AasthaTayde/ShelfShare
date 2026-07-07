@@ -8,3 +8,10 @@ export const getAllBooks = async (page = 1) => {
   const response = await API.get(`/books?page=${page}`);
   return response.data;
 };
+
+export const searchBooks = async (keyword) => {
+    const response = await API.get(
+      `/books/search?keyword=${encodeURIComponent(keyword)}`
+    );
+    return response.data;
+};

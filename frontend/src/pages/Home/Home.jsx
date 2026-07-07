@@ -6,11 +6,12 @@ import Hero from "../../components/Hero/Hero";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import BookCard from "../../components/BookCard/BookCard";
 
-import { getAllBooks } from "../../services/bookService";
+import { getAllBooks, searchBooks } from "../../services/bookService";
 
 function Home() {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     fetchBooks();
@@ -27,12 +28,31 @@ function Home() {
     }
   };
 
+  const handleSearch = async () => {
+    try {
+      if (search.trim() === "") {
+        fetchBooks();
+        return;
+      }
+
+      const data = await searchBooks(search);
+
+      setBooks(data.books);
+    } catch (error) {
+      console.error("Error searching books:", error);
+    }
+  };
+
   if (loading) {
     return (
       <>
         <Navbar />
         <Hero />
-        <SearchBar />
+        <SearchBar
+          search={search}
+          setSearch={setSearch}
+          onSearch={handleSearch}
+        />
         <h2 style={{ textAlign: "center", marginTop: "40px" }}>
           Loading Books...
         </h2>
@@ -46,7 +66,11 @@ function Home() {
 
       <Hero />
 
-      <SearchBar />
+      <SearchBar
+        search={search}
+        setSearch={setSearch}
+        onSearch={handleSearch}
+      />
 
       <section className="books-section">
         <h2>Explore Books</h2>
@@ -60,7 +84,9 @@ function Home() {
               />
             ))
           ) : (
-            <h3>No books available.</h3>
+            <h3 style={{ textAlign: "center" }}>
+              No books found.
+            </h3>
           )}
         </div>
       </section>

@@ -218,7 +218,7 @@ exports.deleteBook = async (req, res) => {
     }
 
     // Delete book from MongoDB
-    await Book.deleteOne();
+    await book.deleteOne();
 
     res.status(200).json({
       success: true,
@@ -233,39 +233,48 @@ exports.deleteBook = async (req, res) => {
   }
 };
 
-
 exports.searchBooks = async (req, res) => {
   try {
-    const { title, author, genre } = req.query;
 
-    let filter = {};
+    const keyword = req.query.keyword || "";
 
-    if (title) {
-      filter.title = { $regex: title, $options: "i" };
-    }
+    const books = await Book.find({
 
-    if (author) {
-      filter.author = { $regex: author, $options: "i" };
-    }
+      $or: [
 
-    if (genre) {
-      filter.genre = { $regex: genre, $options: "i" };
-    }
+        { title: { $regex: keyword, $options: "i" } },
 
-    const books = await Book.find(filter).populate("owner", "name email");
+        { author: { $regex: keyword, $options: "i" } },
+
+        { genre: { $regex: keyword, $options: "i" } }
+
+      ]
+
+    }).populate("owner", "name email");
 
     res.status(200).json({
+
       success: true,
+
       count: books.length,
-      books,
+
+      books
+
     });
+
   } catch (error) {
+
     res.status(500).json({
+
       success: false,
-      message: error.message,
+
+      message: error.message
+
     });
+
   }
 };
+
 exports.myBooks = async (req, res) => {
   try {
     const books = await Book.find({
