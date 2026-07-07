@@ -15,3 +15,8 @@ export const searchBooks = async (keyword) => {
     );
     return response.data;
 };
+
+export const getBookById = async (id) => {
+  const response = await API.get(`/books/${id}`);
+  return response.data;
+};

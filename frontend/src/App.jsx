@@ -10,26 +10,26 @@ import PurchaseRequests from "./pages/PurchaseRequests/PurchaseRequests";
 
 function App() {
   return (
-    <Routes>
+      <Routes>
 
-      <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home />} />
 
-      <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<Login />} />
 
-      <Route path="/register" element={<Register />} />
+        <Route path="/register" element={<Register />} />
 
-      <Route path="/add-book" element={<AddBook />} />
+        <Route path="/add-book" element={<AddBook />} />
 
-      <Route path="/my-books" element={<MyBooks />} />
+        <Route path="/my-books" element={<MyBooks />} />
 
-      <Route path="/book/:id" element={<BookDetails />} />
+        <Route path="/book/:id" element={<BookDetails />} />
 
-      <Route
-        path="/purchase-requests"
-        element={<PurchaseRequests />}
-      />
+        <Route
+          path="/purchase-requests"
+          element={<PurchaseRequests />}
+        />
 
-    </Routes>
+      </Routes>
   );
 }
 

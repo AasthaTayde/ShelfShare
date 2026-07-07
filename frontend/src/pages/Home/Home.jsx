@@ -31,7 +31,7 @@ function Home() {
   const handleSearch = async () => {
     try {
       if (search.trim() === "") {
-        fetchBooks();
+       await fetchBooks();
         return;
       }
 

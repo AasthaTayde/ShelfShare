@@ -1,0 +1,44 @@
+.book-details-page{
+    width:90%;
+    margin:40px auto;
+    display:flex;
+    gap:50px;
+    align-items:flex-start;
+    flex-wrap:wrap;
+}
+
+.book-image-section{
+    flex:1;
+    min-width:300px;
+}
+
+.book-image-section img{
+    width:100%;
+    border-radius:12px;
+}
+
+.book-info{
+    flex:1;
+    min-width:320px;
+}
+
+.book-info h1{
+    margin-bottom:15px;
+}
+
+.book-info p{
+    margin:12px 0;
+    font-size:17px;
+}
+
+.buy-btn{
+    margin-top:25px;
+    padding:12px 30px;
+    background:#edc43e;
+    color:#111;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:17px;
+    font-weight:600;
+}
