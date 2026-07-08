@@ -109,3 +109,20 @@
     background:#C2410C;
 
 }
+
+.delete-btn{
+    width:100%;
+    margin-top:10px;
+    padding:10px;
+    background:#dc2626;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
+    transition:.3s;
+}
+
+.delete-btn:hover{
+    background:#b91c1c;
+}

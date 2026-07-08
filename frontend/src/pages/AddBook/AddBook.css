@@ -1,0 +1,49 @@
+.addbook-container{
+    display:flex;
+    justify-content:center;
+    padding:50px 20px;
+}
+
+.addbook-form{
+    width:500px;
+    background:white;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 5px 15px rgba(0,0,0,.1);
+}
+
+.addbook-form h2{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.addbook-form input,
+.addbook-form select,
+.addbook-form textarea{
+    width:100%;
+    padding:12px;
+    margin-bottom:18px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    font-size:15px;
+}
+
+.addbook-form textarea{
+    resize:none;
+}
+
+.addbook-form button{
+    width:100%;
+    padding:12px;
+    background:#f97316;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+    font-weight:bold;
+}
+
+.addbook-form button:hover{
+    background:#ea580c;
+}

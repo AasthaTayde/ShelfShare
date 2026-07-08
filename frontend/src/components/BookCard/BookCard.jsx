@@ -1,7 +1,7 @@
 import "./BookCard.css";
 import { useNavigate } from "react-router-dom";
 
-function BookCard({ book }) {
+function BookCard({ book, isOwner =false, onDelete }) {
 
   const navigate = useNavigate();
 
@@ -43,6 +43,14 @@ function BookCard({ book }) {
         >
           View Details
         </button>
+        {isOwner && (
+          <button
+            className="delete-btn"
+            onClick={() => onDelete(book._id)}
+          >
+            Delete
+          </button>
+        )}
 
       </div>
 
