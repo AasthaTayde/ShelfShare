@@ -6,6 +6,7 @@ const cors = require("cors");
 const authRoutes = require("./routes/authRoutes");
 const bookRoutes = require("./routes/Bookroutes");
 const purchaseRoutes = require("./routes/PurchaseRoutes");
+const requestRoutes = require("./routes/requestRoutes");
 const app = express();
 
 app.use(cors());
@@ -14,6 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth",authRoutes);
 app.use("/api/books", bookRoutes);
 app.use("/api/purchases", purchaseRoutes);
+app.use("/api/requests", requestRoutes);
 
 mongoose
   .connect(process.env.MONGO_URI)

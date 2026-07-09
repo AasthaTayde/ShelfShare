@@ -1,0 +1,97 @@
+.requests-container{
+    width:90%;
+    max-width:1200px;
+    margin:40px auto;
+}
+
+.requests-container h1{
+    text-align:center;
+    margin-bottom:35px;
+    color:#2563eb;
+}
+
+.requests-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(330px,380px));
+    justify-content:center;
+    gap:25px;
+}
+
+.request-card{
+    width:100%;
+    background:#fff;
+    border-radius:12px;
+    padding:22px;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+    transition:.3s;
+}
+
+.request-card:hover{
+    transform:translateY(-5px);
+}
+
+.request-card h2{
+    color:#2563eb;
+    margin-bottom:15px;
+}
+
+.request-card p{
+    margin:10px 0;
+    color:#444;
+}
+
+.status{
+    font-weight:600;
+}
+
+.status.pending{
+    color:#eab308;
+}
+
+.status.accepted{
+    color:#16a34a;
+}
+
+.status.rejected{
+    color:#dc2626;
+}
+
+.request-actions{
+    display:flex;
+    gap:12px;
+    margin-top:20px;
+}
+
+.accept-btn,
+.reject-btn{
+    flex:1;
+    padding:11px;
+    border:none;
+    border-radius:8px;
+    color:white;
+    cursor:pointer;
+    font-weight:600;
+    transition:.3s;
+}
+
+.accept-btn{
+    background:#22c55e;
+}
+
+.accept-btn:hover{
+    background:#16a34a;
+}
+
+.reject-btn{
+    background:#ef4444;
+}
+
+.reject-btn:hover{
+    background:#dc2626;
+}
+
+.no-request{
+    text-align:center;
+    color:#666;
+    margin-top:60px;
+}

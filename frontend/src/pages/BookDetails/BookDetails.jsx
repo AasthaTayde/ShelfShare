@@ -3,7 +3,9 @@ import { useParams } from "react-router-dom";
 import "./BookDetails.css";
 
 import Navbar from "../../components/Navbar/Navbar";
+
 import { getBookById } from "../../services/bookService";
+import { createRequest } from "../../services/requestService";
 
 function BookDetails() {
 
@@ -12,10 +14,10 @@ function BookDetails() {
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const user = JSON.parse(localStorage.getItem("user"));
+
   useEffect(() => {
-
     fetchBook();
-
   }, []);
 
   const fetchBook = async () => {
@@ -35,6 +37,26 @@ function BookDetails() {
       setLoading(false);
 
     }
+
+  };
+
+  const handleRequest = async () => {
+
+    try {
+
+      await createRequest(book._id);
+
+      alert("Purchase Request Sent Successfully!");
+
+    } catch (error) {
+
+      alert(
+        error.response?.data?.message ||
+        "Failed to send request."
+      );
+
+    }
+
   };
 
   if (loading) {
@@ -42,11 +64,18 @@ function BookDetails() {
     return (
       <>
         <Navbar />
-        <h2 style={{ textAlign: "center", marginTop: "50px" }}>
+
+        <h2
+          style={{
+            textAlign: "center",
+            marginTop: "50px",
+          }}
+        >
           Loading...
         </h2>
       </>
     );
+
   }
 
   return (
@@ -95,9 +124,14 @@ function BookDetails() {
 
           <p>{book.owner.email}</p>
 
-          <button className="buy-btn">
-            Request to Buy
-          </button>
+          {user && user.id !== book.owner._id && (
+            <button
+              className="buy-btn"
+              onClick={handleRequest}
+            >
+              Request to Buy
+            </button>
+          )}
 
         </div>
 

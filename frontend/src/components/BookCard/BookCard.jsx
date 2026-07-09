@@ -44,6 +44,14 @@ function BookCard({ book, isOwner =false, onDelete }) {
           View Details
         </button>
         {isOwner && (
+  <button
+    className="edit-btn"
+    onClick={() => navigate(`/edit-book/${book._id}`)}
+  >
+    Edit
+  </button>
+)}
+        {isOwner && (
           <button
             className="delete-btn"
             onClick={() => onDelete(book._id)}

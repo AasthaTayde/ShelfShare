@@ -37,7 +37,7 @@ function Navbar() {
             <Link to="/my-books">My Books</Link>
 
             <Link to="/purchase-requests">
-              Requests
+              Seller Requests
             </Link>
           </>
         )}

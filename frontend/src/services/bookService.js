@@ -70,3 +70,20 @@ export const getMyBooks = async () => {
 
   return response.data;
 };
+export const updateBook = async (id, bookData) => {
+
+  const token = localStorage.getItem("token");
+
+  const response = await API.put(
+    `/books/${id}`,
+    bookData,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+
+  return response.data;
+};

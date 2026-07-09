@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { loginUser } from "../../services/authService";
+import toast from "react-hot-toast";
 import "./Login.css";
 
 function Login() {
@@ -33,6 +34,7 @@ function Login() {
         "user",
         JSON.stringify(data.user)
       );
+      toast.success("Login Successful!");
 
       setFormData({
         email: "",
@@ -43,7 +45,7 @@ function Login() {
 
     } catch (error) {
 
-      alert(
+      toast.error(
         error.response?.data?.message || "Login Failed"
       );
 
