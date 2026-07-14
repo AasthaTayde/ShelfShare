@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:5000/api/auth",
+  baseURL: "https://bookflow-backend-jz01.onrender.com/api/auth",
+ 
 });
 
 // Signup

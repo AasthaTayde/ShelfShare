@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "http://localhost:5000/api/notifications";
+const API = "https://bookflow-backend-jz01.onrender.com/api/notifications";
 
 export const getNotifications = async () => {
 
