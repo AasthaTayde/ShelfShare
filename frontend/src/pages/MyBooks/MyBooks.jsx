@@ -34,14 +34,14 @@ function MyBooks() {
     try {
       await deleteBook(id);
 
-      alert("Book deleted successfully!");
+      toast.error("Book deleted successfully!");
 
       // Refresh the list
       fetchMyBooks();
     } catch (error) {
       console.log(error);
 
-      alert(
+      toast.error(
         error.response?.data?.message || "Failed to delete book."
       );
     }

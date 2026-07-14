@@ -87,3 +87,20 @@ export const updateBook = async (id, bookData) => {
 
   return response.data;
 };
+export const searchNearbyBooks = async (
+  keyword,
+  address,
+  radius = 5
+) => {
+
+  const response = await API.get(
+    `/books/search-nearby?keyword=${encodeURIComponent(
+      keyword
+    )}&address=${encodeURIComponent(
+      address
+    )}&radius=${radius}`
+  );
+
+  return response.data;
+
+};

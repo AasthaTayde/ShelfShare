@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { signupUser } from "../../services/authService";
+import toast from "react-hot-toast";
 import "./Register.css";
 
 function Register() {
@@ -10,6 +11,7 @@ function Register() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone:"",
     password: "",
   });
 
@@ -28,13 +30,13 @@ function Register() {
 
       await signupUser(formData);
 
-      alert("Registration Successful!");
+      toast.success("Registration Successful!");
 
       navigate("/login");
 
     } catch (error) {
 
-      alert(
+      toast.error(
         error.response?.data?.message || "Registration Failed"
       );
 
@@ -69,6 +71,15 @@ function Register() {
           value={formData.email}
           onChange={handleChange}
           required
+        />
+
+        <input
+        type="tel"
+        name="phone"
+        placeholder="Phone Number"
+        value={formData.phone}
+        onChange={handleChange}
+        required
         />
 
         <input

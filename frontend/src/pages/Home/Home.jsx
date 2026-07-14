@@ -6,12 +6,22 @@ import Hero from "../../components/Hero/Hero";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import BookCard from "../../components/BookCard/BookCard";
 
-import { getAllBooks, searchBooks } from "../../services/bookService";
+import {
+  getAllBooks,
+  searchBooks,
+  searchNearbyBooks,
+} from "../../services/bookService";
+
+import toast from "react-hot-toast";
 
 function Home() {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
+
   const [search, setSearch] = useState("");
+
+  // Default nearby search radius
+  const [radius] = useState(20);
 
   useEffect(() => {
     fetchBooks();
@@ -31,7 +41,7 @@ function Home() {
   const handleSearch = async () => {
     try {
       if (search.trim() === "") {
-       await fetchBooks();
+        fetchBooks();
         return;
       }
 
@@ -39,21 +49,78 @@ function Home() {
 
       setBooks(data.books);
     } catch (error) {
-      console.error("Error searching books:", error);
+      console.error(error);
+      toast.error("Search failed");
     }
+  };
+
+  const handleNearbySearch = () => {
+    if (search.trim() === "") {
+      toast.error("Please enter a book title, author or genre first.");
+      return;
+    }
+
+    if (!navigator.geolocation) {
+      toast.error("Geolocation is not supported.");
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+
+        try {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+          );
+
+          const locationData = await response.json();
+
+          const data = await searchNearbyBooks(
+            search,
+            locationData.display_name,
+            radius
+          );
+
+          setBooks(data.books);
+
+          if (data.books.length === 0) {
+            toast("No nearby books found.");
+          } else {
+            toast.success(`${data.books.length} nearby books found.`);
+          }
+        } catch (error) {
+          console.error(error);
+          toast.error("Nearby search failed.");
+        }
+      },
+      () => {
+        toast.error("Location permission denied.");
+      }
+    );
   };
 
   if (loading) {
     return (
       <>
         <Navbar />
+
         <Hero />
+
         <SearchBar
           search={search}
           setSearch={setSearch}
           onSearch={handleSearch}
+          onNearbySearch={handleNearbySearch}
         />
-        <h2 style={{ textAlign: "center", marginTop: "40px" }}>
+
+        <h2
+          style={{
+            textAlign: "center",
+            marginTop: "40px",
+          }}
+        >
           Loading Books...
         </h2>
       </>
@@ -70,6 +137,7 @@ function Home() {
         search={search}
         setSearch={setSearch}
         onSearch={handleSearch}
+        onNearbySearch={handleNearbySearch}
       />
 
       <section className="books-section">
@@ -84,7 +152,11 @@ function Home() {
               />
             ))
           ) : (
-            <h3 style={{ textAlign: "center" }}>
+            <h3
+              style={{
+                textAlign: "center",
+              }}
+            >
               No books found.
             </h3>
           )}

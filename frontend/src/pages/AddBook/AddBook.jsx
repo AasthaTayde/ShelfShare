@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { addBook } from "../../services/bookService";
+import toast from "react-hot-toast";
 import "./AddBook.css";
 
 function AddBook() {
@@ -14,6 +15,7 @@ function AddBook() {
     condition: "",
     price: "",
     description: "",
+    pickupAddress:"",
   });
 
   const [bookImage, setBookImage] = useState(null);
@@ -29,6 +31,61 @@ function AddBook() {
     setBookImage(e.target.files[0]);
   };
 
+  const handleCurrentLocation = () => {
+
+    if (!navigator.geolocation) {
+  
+      toast.success("Geolocation is not supported.");
+  
+      return;
+  
+    }
+  
+    navigator.geolocation.getCurrentPosition(
+  
+      async (position) => {
+  
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+  
+        try {
+  
+          const response = await fetch(
+  
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+  
+          );
+  
+          const data = await response.json();
+  
+          setBookData({
+  
+            ...bookData,
+  
+            pickupAddress: data.display_name,
+  
+          });
+  
+        } catch (error) {
+  
+          console.log(error);
+  
+          toast.error("Unable to fetch address.");
+  
+        }
+  
+      },
+  
+      () => {
+  
+        toast.error("Location permission denied.");
+  
+      }
+  
+    );
+  
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -42,6 +99,7 @@ function AddBook() {
       formData.append("condition", bookData.condition);
       formData.append("price", bookData.price);
       formData.append("description", bookData.description);
+      formData.append("pickupAddress", bookData.pickupAddress);
 
       if (bookImage) {
         formData.append("bookImage", bookImage);
@@ -49,7 +107,7 @@ function AddBook() {
 
       await addBook(formData);
 
-      alert("Book Added Successfully!");
+      toast.success("Book Added Successfully!");
 
       navigate("/");
 
@@ -57,7 +115,7 @@ function AddBook() {
 
       console.log(error);
 
-      alert(
+      toast.error(
         error.response?.data?.message || "Failed to Add Book"
       );
 
@@ -132,12 +190,29 @@ function AddBook() {
         />
 
         <input
+        type="text"
+        name="pickupAddress"
+        placeholder="Pickup Address (e.g. ABC Book Store, Near Shivajinagar Metro Station, Pune)"
+        value={bookData.pickupAddress}
+        onChange={handleChange}
+        required
+        />
+
+       <button
+       type="button"
+       className="location-btn"
+       onClick={handleCurrentLocation}
+        >
+       📍 Use Current Location
+       </button>
+
+        <input
           type="file"
           accept="image/*"
           onChange={handleImageChange}
         />
 
-        <button type="submit">
+        <button type="submit" className="submit-btn">
           Add Book
         </button>
 

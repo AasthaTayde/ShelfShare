@@ -30,8 +30,8 @@
 .register-form button{
     width:100%;
     padding:12px;
-    background:#d4af37;
-    color:#111;
+    background:#A0522D;
+    color:#FFFFF0;
     border:none;
     border-radius:8px;
     font-size:16px;
@@ -40,7 +40,7 @@
 }
 
 .register-form button:hover{
-    opacity:.9;
+    background:#8F3F24;
 }
 
 .register-form p{

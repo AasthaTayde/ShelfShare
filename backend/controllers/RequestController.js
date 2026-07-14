@@ -1,12 +1,14 @@
 const Request = require("../models/Request");
 const Book = require("../models/Books");
-
+const User = require("../models/User");
+const Notification = require("../models/Notification");
 // Create Purchase Request
 
 exports.createRequest = async (req, res) => {
   try {
 
     const book = await Book.findById(req.params.bookId);
+    const buyer = await User.findById(req.user.id);
 
     if (!book) {
       return res.status(404).json({
@@ -41,6 +43,19 @@ exports.createRequest = async (req, res) => {
       buyer: req.user.id,
       seller: book.owner,
     });
+    
+    await Notification.create({
+
+      user: book.owner,
+    
+      title: "New Purchase Request",
+    
+      message: `${buyer.name} requested your book "${book.title}".`,
+    
+      type: "REQUEST_RECEIVED",
+    
+    });
+
 
     res.status(201).json({
       success: true,
@@ -96,7 +111,7 @@ exports.getBuyerRequests = async (req, res) => {
       buyer: req.user.id,
     })
       .populate("book")
-      .populate("seller", "name email");
+      .populate("seller", "name email phone");
 
     res.status(200).json({
 
@@ -122,67 +137,95 @@ exports.getBuyerRequests = async (req, res) => {
 
 };
 
-  // Accept / Reject Request
+// Accept / Reject Request
 
 exports.updateRequestStatus = async (req, res) => {
 
-    try {
-  
-      const { status } = req.body;
-  
-      if (!["Accepted", "Rejected"].includes(status)) {
-  
-        return res.status(400).json({
-          success: false,
-          message: "Invalid status",
-        });
-  
-      }
-  
-      const request = await Request.findById(req.params.id);
-  
-      if (!request) {
-  
-        return res.status(404).json({
-          success: false,
-          message: "Request not found",
-        });
-  
-      }
-  
-      if (request.seller.toString() !== req.user.id) {
-  
-        return res.status(403).json({
-          success: false,
-          message: "Unauthorized",
-        });
-  
-      }
-  
-      request.status = status;
-  
-      await request.save();
-  
-      res.status(200).json({
-  
-        success: true,
-  
-        message: `Request ${status}`,
-  
-        request,
-  
-      });
-  
-    } catch (error) {
-  
-      res.status(500).json({
-  
+  try {
+
+    const { status } = req.body;
+
+    if (!["Accepted", "Rejected"].includes(status)) {
+
+      return res.status(400).json({
         success: false,
-  
-        message: error.message,
-  
+        message: "Invalid status",
       });
-  
+
     }
-  
-  };
+
+    const request = await Request.findById(req.params.id);
+
+    if (!request) {
+
+      return res.status(404).json({
+        success: false,
+        message: "Request not found",
+      });
+
+    }
+
+    if (request.seller.toString() !== req.user.id) {
+
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized",
+      });
+
+    }
+
+    // Update request status
+    request.status = status;
+
+    await request.save();
+
+    // Get book details
+    const book = await Book.findById(request.book);
+
+    // Create notification for buyer
+    await Notification.create({
+
+      user: request.buyer,
+
+      title:
+        status === "Accepted"
+          ? "Request Accepted"
+          : "Request Rejected",
+
+      message:
+        status === "Accepted"
+          ? `Your request for "${book.title}" has been accepted by the seller.`
+          : `Your request for "${book.title}" has been rejected by the seller.`,
+
+      type:
+        status === "Accepted"
+          ? "REQUEST_ACCEPTED"
+          : "REQUEST_REJECTED",
+
+    });
+
+    res.status(200).json({
+
+      success: true,
+
+      message: `Request ${status}`,
+
+      request,
+
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+
+      success: false,
+
+      message: error.message,
+
+    });
+
+  }
+
+};
+
+

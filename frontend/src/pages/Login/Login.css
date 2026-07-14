@@ -29,12 +29,13 @@
 .login-form button{
     width:100%;
     padding:12px;
-    background:#d4af37;
+    background:#A0522D;
     border:none;
     border-radius:8px;
     cursor:pointer;
     font-size:16px;
     font-weight:bold;
+    color:#FFFFF0;
 }
 
 .login-form p{
@@ -44,4 +45,7 @@
 
 .login-form a{
     margin-left:8px;
+}
+.login-form button:hover{
+    background:#934B2A;
 }

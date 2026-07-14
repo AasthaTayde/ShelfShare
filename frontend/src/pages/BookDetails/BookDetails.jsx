@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import toast from "react-hot-toast";
 import "./BookDetails.css";
 
 import Navbar from "../../components/Navbar/Navbar";
@@ -46,11 +47,11 @@ function BookDetails() {
 
       await createRequest(book._id);
 
-      alert("Purchase Request Sent Successfully!");
+      toast.success("Purchase Request Sent Successfully!");
 
     } catch (error) {
 
-      alert(
+      toast.error(
         error.response?.data?.message ||
         "Failed to send request."
       );
@@ -100,7 +101,9 @@ function BookDetails() {
 
           <h1>{book.title}</h1>
 
-          <h3>{book.author}</h3>
+          <p className="book-author">
+            {book.author}
+            </p>
 
           <p>
             <strong>Genre:</strong> {book.genre}

@@ -1,38 +1,92 @@
 import { Routes, Route } from "react-router-dom";
-import EditBook from "./pages/EditBook/EditBook";
+
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import AddBook from "./pages/AddBook/AddBook";
 import MyBooks from "./pages/MyBooks/MyBooks";
 import BookDetails from "./pages/BookDetails/BookDetails";
+import EditBook from "./pages/EditBook/EditBook";
 import PurchaseRequests from "./pages/PurchaseRequests/PurchaseRequests";
 import BuyerRequests from "./pages/BuyerRequests/BuyerRequests";
 
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+
 function App() {
+
   return (
-      <Routes>
 
-        <Route path="/" element={<Home />} />
+    <Routes>
 
-        <Route path="/login" element={<Login />} />
+      <Route
+        path="/"
+        element={<Home />}
+      />
 
-        <Route path="/register" element={<Register />} />
+      <Route
+        path="/login"
+        element={<Login />}
+      />
 
-        <Route path="/add-book" element={<AddBook />} />
+      <Route
+        path="/register"
+        element={<Register />}
+      />
 
-        <Route path="/my-books" element={<MyBooks />} />
+      <Route
+        path="/book/:id"
+        element={<BookDetails />}
+      />
 
-        <Route path="/book/:id" element={<BookDetails />} />
+      <Route
+        path="/add-book"
+        element={
+          <ProtectedRoute>
+            <AddBook />
+          </ProtectedRoute>
+        }
+      />
 
-        <Route path="/edit-book/:id" element={<EditBook />} />
+      <Route
+        path="/my-books"
+        element={
+          <ProtectedRoute>
+            <MyBooks />
+          </ProtectedRoute>
+        }
+      />
 
-        <Route path="/purchase-requests"element={<PurchaseRequests />}/>
-        
-        <Route path="/my-requests"element={<BuyerRequests />}/>
+      <Route
+        path="/edit-book/:id"
+        element={
+          <ProtectedRoute>
+            <EditBook />
+          </ProtectedRoute>
+        }
+      />
 
-      </Routes>
+      <Route
+        path="/purchase-requests"
+        element={
+          <ProtectedRoute>
+            <PurchaseRequests />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/buyer-requests"
+        element={
+          <ProtectedRoute>
+            <BuyerRequests />
+          </ProtectedRoute>
+        }
+      />
+
+    </Routes>
+
   );
+
 }
 
 export default App;

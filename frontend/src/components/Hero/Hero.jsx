@@ -11,7 +11,7 @@ function Hero() {
         </h1>
 
         <p>
-          Save money, share knowledge, and give books a second life with ShelfShare.
+          Save money, share knowledge, and give books a second life with BookFlow.
         </p>
 
         <button className="hero-btn">

@@ -69,6 +69,34 @@
 
 }
 
+.nearby-btn{
+
+    padding:15px 30px;
+
+    border:none;
+
+    min-width:100px;
+
+    background:olive;
+
+    color:ivory;
+
+    border-radius:8px;
+
+    font-size:1rem;
+
+    cursor:pointer;
+
+    transition:0.3s;
+
+}
+
+.nearby-btn:hover{
+
+    background:#556B2F;
+
+}
+
 @media(max-width:768px){
 
 .search-container{
@@ -77,7 +105,7 @@
 
 }
 
-.search-btn{
+.search-btn,.nearby-btn{
 
     width:100%;
 

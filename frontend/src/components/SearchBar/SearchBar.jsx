@@ -1,9 +1,16 @@
 import "./SearchBar.css";
 
-function SearchBar({ search, setSearch, onSearch }) {
+function SearchBar({
+  search,
+  setSearch,
+  onSearch,
+  onNearbySearch,
+}) {
   return (
     <section className="search-section">
+
       <div className="search-container">
+
         <input
           type="text"
           placeholder="Search by title, author or genre..."
@@ -23,7 +30,16 @@ function SearchBar({ search, setSearch, onSearch }) {
         >
           Search
         </button>
+
+        <button
+          className="nearby-btn"
+          onClick={onNearbySearch}
+        >
+          📍 Nearby
+        </button>
+
       </div>
+
     </section>
   );
 }

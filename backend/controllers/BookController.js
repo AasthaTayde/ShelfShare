@@ -2,7 +2,8 @@ const Book = require("../models/Books");
 const uploadToCloudinary = require("../utils/CloudinaryUpload");
 const cloudinary = require("../config/cloudinary");
 const streamifier = require("streamifier");
-
+const axios = require("axios");
+const Request = require("../models/Request");
 
 exports.addBook = async (req, res) => {
   try {
@@ -16,14 +17,47 @@ exports.addBook = async (req, res) => {
       description,
       condition,
       price,
+      pickupAddress,
     } = req.body;
 
-    if (!title || !author || !genre || !price) {
+    if (!title || !author || !genre || !price || !pickupAddress) {
       return res.status(400).json({
         success: false,
         message: "Title, Author, Genre and Price are required",
       });
     }
+    // Convert address into coordinates
+
+    const geoResponse = await axios.get(
+      "https://nominatim.openstreetmap.org/search",
+      {
+        params: {
+          q: pickupAddress,
+          format: "json",
+          limit: 1,
+        },
+        headers: {
+          "User-Agent": "ShelfShare",
+        },
+      }
+    );
+
+    if (geoResponse.data.length === 0) {
+
+      return res.status(400).json({
+        success: false,
+        message: "Invalid pickup address.",
+      });
+
+    }
+
+    const latitude = parseFloat(
+      geoResponse.data[0].lat
+    );
+
+    const longitude = parseFloat(
+      geoResponse.data[0].lon
+    );
 
     let imageData = {
       url: "",
@@ -49,7 +83,15 @@ exports.addBook = async (req, res) => {
       description,
       condition,
       price,
+      pickupAddress,
 
+      pickupLocation: {
+
+        type: "Point",
+
+        coordinates: [longitude, latitude],
+
+      },
       bookImage: imageData,
 
       owner: req.user.id,
@@ -135,6 +177,7 @@ exports.getBookById = async (req, res) => {
 
 exports.updateBook = async (req, res) => {
   try {
+
     const book = await Book.findById(req.params.id);
 
     if (!book) {
@@ -151,10 +194,43 @@ exports.updateBook = async (req, res) => {
       });
     }
 
+    // If pickup address changes, regenerate coordinates
+    if (req.body.pickupAddress) {
+
+      const geoResponse = await axios.get(
+        "https://nominatim.openstreetmap.org/search",
+        {
+          params: {
+            q: req.body.pickupAddress,
+            format: "json",
+            limit: 1,
+          },
+          headers: {
+            "User-Agent": "ShelfShare",
+          },
+        }
+      );
+
+      if (geoResponse.data.length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid pickup address.",
+        });
+      }
+
+      const latitude = parseFloat(geoResponse.data[0].lat);
+      const longitude = parseFloat(geoResponse.data[0].lon);
+
+      req.body.pickupLocation = {
+        type: "Point",
+        coordinates: [longitude, latitude],
+      };
+    }
+
     // If a new image is uploaded
     if (req.file) {
 
-      // Delete old image from Cloudinary
+      // Delete old Cloudinary image
       if (book.bookImage && book.bookImage.public_id) {
         await cloudinary.uploader.destroy(book.bookImage.public_id);
       }
@@ -187,50 +263,74 @@ exports.updateBook = async (req, res) => {
     });
 
   } catch (error) {
+
     res.status(500).json({
       success: false,
       message: error.message,
     });
+
   }
 };
 
 exports.deleteBook = async (req, res) => {
+
   try {
+
     const book = await Book.findById(req.params.id);
 
     if (!book) {
+
       return res.status(404).json({
         success: false,
         message: "Book not found",
       });
+
     }
 
     if (book.owner.toString() !== req.user.id) {
+
       return res.status(403).json({
         success: false,
         message: "You are not authorized to delete this book",
       });
+
     }
 
     // Delete image from Cloudinary
     if (book.bookImage && book.bookImage.public_id) {
+
       await cloudinary.uploader.destroy(book.bookImage.public_id);
+
     }
 
-    // Delete book from MongoDB
+    // Delete all purchase requests related to this book
+    await Request.deleteMany({
+      book: book._id,
+    });
+
+    // Delete the book
     await book.deleteOne();
 
     res.status(200).json({
+
       success: true,
+
       message: "Book deleted successfully",
+
     });
 
   } catch (error) {
+
     res.status(500).json({
+
       success: false,
+
       message: error.message,
+
     });
+
   }
+
 };
 
 exports.searchBooks = async (req, res) => {
@@ -293,3 +393,154 @@ exports.myBooks = async (req, res) => {
     });
   }
 };
+// Get Nearby Books
+
+exports.getNearbyBooks = async (req, res) => {
+
+  try {
+
+    const { keyword, address, radius } = req.query;
+
+    if (!keyword || !address) {
+
+      return res.status(400).json({
+        success: false,
+        message: "Keyword and address are required."
+      });
+
+    }
+
+    const searchRadius = Number(radius) || 10;
+
+    const response = await axios.get(
+      "https://nominatim.openstreetmap.org/search",
+      {
+        params: {
+          q: address,
+          format: "json",
+          limit: 1,
+        },
+        headers: {
+          "User-Agent": "ShelfShare"
+        }
+      }
+    );
+
+    if (response.data.length === 0) {
+
+      return res.status(404).json({
+        success: false,
+        message: "Location not found."
+      });
+
+    }
+
+
+    const latitude = Number(response.data[0].lat);
+    const longitude = Number(response.data[0].lon);
+
+    console.log("=================================");
+    console.log("Search Address:", address);
+    console.log("Latitude:", latitude);
+    console.log("Longitude:", longitude);
+    console.log("Full OSM Response:", response.data[0]);
+    console.log("=================================");
+
+    const books = await Book.aggregate([
+      {
+        $geoNear: {
+          near: {
+            type: "Point",
+            coordinates: [longitude, latitude],
+          },
+          distanceField: "distance",
+          maxDistance: searchRadius * 1000,
+          spherical: true,
+        },
+      },
+    
+      {
+        $match: {
+          $or: [
+            {
+              title: {
+                $regex: keyword,
+                $options: "i",
+              },
+            },
+            {
+              author: {
+                $regex: keyword,
+                $options: "i",
+              },
+            },
+            {
+              genre: {
+                $regex: keyword,
+                $options: "i",
+              },
+            },
+          ],
+        },
+      },
+    
+      {
+        $lookup: {
+          from: "users",
+          localField: "owner",
+          foreignField: "_id",
+          as: "owner",
+        },
+      },
+    
+      {
+        $unwind: "$owner",
+      },
+    
+      {
+        $project: {
+          title: 1,
+          author: 1,
+          genre: 1,
+          description: 1,
+          condition: 1,
+          price: 1,
+          availability: 1,
+          pickupAddress: 1,
+          pickupLocation: 1,
+          bookImage: 1,
+    
+          distance: {
+            $round: [
+              {
+                $divide: ["$distance", 1000],
+              },
+              2,
+            ],
+          },
+    
+          owner: {
+            _id: "$owner._id",
+            name: "$owner.name",
+            email: "$owner.email",
+            phone: "$owner.phone",
+          },
+        },
+      },
+    ]);
+    
+    res.status(200).json({
+      success: true,
+      count: books.length,
+      books,
+    });
+  } catch (error) {
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  
+  }
+  
+  };

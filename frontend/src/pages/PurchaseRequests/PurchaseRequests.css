@@ -7,7 +7,7 @@
 .requests-container h1{
     text-align:center;
     margin-bottom:35px;
-    color:#2563eb;
+    color:brown;
 }
 
 .requests-grid{
@@ -31,7 +31,7 @@
 }
 
 .request-card h2{
-    color:#2563eb;
+    color:brown;
     margin-bottom:15px;
 }
 
@@ -49,7 +49,7 @@
 }
 
 .status.accepted{
-    color:#16a34a;
+    color:green;
 }
 
 .status.rejected{
@@ -75,7 +75,7 @@
 }
 
 .accept-btn{
-    background:#22c55e;
+    background:#22bc5a;
 }
 
 .accept-btn:hover{

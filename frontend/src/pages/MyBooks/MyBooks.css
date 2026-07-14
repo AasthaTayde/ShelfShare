@@ -1,17 +1,25 @@
 .mybooks-container{
     width:90%;
     max-width:1300px;
-    margin:40px auto;
+    /*margin:40px auto;*/
+    margin:30px auto;
 }
 
 .mybooks-container h1{
     text-align:center;
-    margin-bottom:35px;
-    color:#1f2937;
+    /*margin-bottom:35px;*/
+    margin-bottom:30px;
+    color:brown;
 }
 
 .mybooks-grid{
-    display:grid;
+    /*display:grid;
     grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-    gap:30px;
+    gap:30px;*/
+    
+        display:grid;
+        grid-template-columns:repeat(auto-fill,minmax(280px,280px));
+        justify-content:center;
+        gap:30px;
+   
 }

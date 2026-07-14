@@ -12,6 +12,7 @@ const {
   deleteBook,
   searchBooks,
   myBooks,
+  getNearbyBooks,
 } = require("../controllers/BookController");
 
 
@@ -19,6 +20,8 @@ router.post("/add",auth,upload.single("bookImage"),addBook);
 router.get("/", getAllBooks);
 
 router.get("/search", searchBooks);
+
+router.get("/search-nearby",getNearbyBooks);
 
 router.get("/mybooks", auth, myBooks);
 

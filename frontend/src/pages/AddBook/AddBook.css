@@ -5,9 +5,9 @@
 }
 
 .addbook-form{
-    width:500px;
+    width:460px;
     background:white;
-    padding:30px;
+    padding:24px;
     border-radius:10px;
     box-shadow:0 5px 15px rgba(0,0,0,.1);
 }
@@ -15,14 +15,15 @@
 .addbook-form h2{
     text-align:center;
     margin-bottom:25px;
+    color:brown;
 }
 
 .addbook-form input,
 .addbook-form select,
 .addbook-form textarea{
     width:100%;
-    padding:12px;
-    margin-bottom:18px;
+    padding:10px;
+    margin-bottom:14px;
     border:1px solid #ddd;
     border-radius:8px;
     font-size:15px;
@@ -31,19 +32,131 @@
 .addbook-form textarea{
     resize:none;
 }
+.submit-btn{
 
-.addbook-form button{
     width:100%;
-    padding:12px;
-    background:#f97316;
+
+    padding:10px;
+
+    background:#F97316;
+
     color:white;
+
     border:none;
+
     border-radius:8px;
+
     cursor:pointer;
-    font-size:16px;
+
+    font-size:15px;
+
     font-weight:bold;
+
+    transition:.3s;
+
 }
 
-.addbook-form button:hover{
-    background:#ea580c;
+.submit-btn:hover{
+
+    background:#EA580C;
+
+}
+
+
+.location-btn{
+
+    width:100%;
+
+    margin-top:4px;
+
+    padding:10px;
+
+    background:#DBEAFE;
+
+    color:olivedrab;
+
+    border:1px solid #BFDBFE;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    transition:.3s;
+
+    margin-bottom: 17px;
+
+}
+
+.location-btn:hover{
+
+    background:#BFDBFE;
+
+}*/
+.submit-btn{
+
+    width:100%;
+
+    padding:10px;
+
+    background:#E67E22;
+
+    color:white;
+
+    border:none;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    font-size:15px;
+
+    font-weight:bold;
+
+    transition:.3s;
+
+}
+
+.submit-btn:hover{
+
+    background:#D35400;
+
+}
+
+
+.location-btn{
+
+    width:100%;
+
+    margin-top:4px;
+
+    padding:10px;
+
+    background:#2E7D32;
+
+    color:white;
+
+    border:1px solid #1B5E20;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    transition:.3s;
+
+    margin-bottom:17px;
+
+}
+
+.location-btn:hover{
+
+    background:#1B5E20;
+
 }

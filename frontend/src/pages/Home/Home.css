@@ -11,12 +11,16 @@
   
   .books-section h2 {
     font-size: 2rem;
-    color: #1f2937;
+    color: black;
     margin-bottom: 30px;
   }
   
   .books-grid {
-    display: grid;
+    /*display: grid;
     grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 30px;*/
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 280px));
+    justify-content: center;
     gap: 30px;
   }

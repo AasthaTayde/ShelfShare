@@ -1,7 +1,10 @@
+
 const mongoose = require("mongoose");
 
 const bookSchema = new mongoose.Schema(
+  
   {
+    
     title: {
       type: String,
       required: true,
@@ -50,10 +53,30 @@ const bookSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-  },
+    pickupLocation: {
+      type: {
+        type: String,
+        enum: ["Point"],
+        default: "Point",
+      },
+      coordinates: {
+        type: [Number], // [longitude, latitude]
+        required: true,
+      },
+    },
+    
+    pickupAddress: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+},
   {
     timestamps: true,
   }
 );
+bookSchema.index({
+  pickupLocation: "2dsphere",
+});
 
 module.exports = mongoose.model("Book", bookSchema);

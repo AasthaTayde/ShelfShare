@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar/Navbar";
-import {
-  getMyRequests,
-  updateRequestStatus,
-} from "../../services/requestService";
+import {getMyRequests,updateRequestStatus,} from "../../services/requestService";
+import toast from "react-hot-toast";
 import "./PurchaseRequests.css";
 
 function PurchaseRequests() {
@@ -11,7 +9,7 @@ function PurchaseRequests() {
   const [requests, setRequests] = useState([]);
 
   useEffect(() => {
-    fetchRequests();
+   fetchRequests();
   }, []);
 
   const fetchRequests = async () => {
@@ -36,13 +34,13 @@ function PurchaseRequests() {
 
       await updateRequestStatus(id, status);
 
-      alert(`Request ${status}`);
+      toast.success(`Request ${status}`);
 
       fetchRequests();
 
     } catch (error) {
 
-      alert(
+      toast.error(
         error.response?.data?.message ||
         "Something went wrong"
       );
@@ -50,6 +48,11 @@ function PurchaseRequests() {
     }
 
   };
+
+  // Remove orphan requests whose book has been deleted
+  const validRequests = requests.filter(
+    (request) => request.book
+  );
 
   return (
     <>
@@ -59,7 +62,7 @@ function PurchaseRequests() {
 
         <h1>Purchase Requests</h1>
 
-        {requests.length === 0 ? (
+        {validRequests.length === 0 ? (
 
           <h3 className="no-request">
             No Purchase Requests Yet.
@@ -69,21 +72,23 @@ function PurchaseRequests() {
 
           <div className="requests-grid">
 
-            {requests.map((request) => (
+            {validRequests.map((request) => (
 
               <div
                 className="request-card"
                 key={request._id}
               >
 
-                <h2>{request.book.title}</h2>
+                <h2>{request.book?.title}</h2>
 
                 <p>
-                  <strong>Buyer:</strong> {request.buyer.name}
+                  <strong>Buyer:</strong>{" "}
+                  {request.buyer?.name}
                 </p>
 
                 <p>
-                  <strong>Email:</strong> {request.buyer.email}
+                  <strong>Email:</strong>{" "}
+                  {request.buyer?.email}
                 </p>
 
                 <p>

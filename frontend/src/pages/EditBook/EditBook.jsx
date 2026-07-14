@@ -19,6 +19,7 @@ function EditBook() {
     condition: "",
     price: "",
     description: "",
+    pickupAddress:"",
   });
 
   const [bookImage, setBookImage] = useState(null);
@@ -38,13 +39,14 @@ function EditBook() {
         condition: data.book.condition,
         price: data.book.price,
         description: data.book.description,
+        pickupAddress: data.book.pickupAddress,
       });
 
     } catch (error) {
 
       console.log(error);
 
-      alert("Failed to load book.");
+      toast.error("Failed to load book.");
 
     } finally {
 
@@ -64,6 +66,61 @@ function EditBook() {
     setBookImage(e.target.files[0]);
   };
 
+  const handleCurrentLocation = () => {
+
+    if (!navigator.geolocation) {
+  
+      toast.erro("Geolocation is not supported.");
+  
+      return;
+  
+    }
+  
+    navigator.geolocation.getCurrentPosition(
+  
+      async (position) => {
+  
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+  
+        try {
+  
+          const response = await fetch(
+  
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+  
+          );
+  
+          const data = await response.json();
+  
+          setBookData({
+  
+            ...bookData,
+  
+            pickupAddress: data.display_name,
+  
+          });
+  
+        } catch (error) {
+  
+          console.log(error);
+  
+          toast.error("Unable to fetch address.");
+  
+        }
+  
+      },
+  
+      () => {
+  
+        toast.error("Location permission denied.");
+  
+      }
+  
+    );
+  
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -77,6 +134,7 @@ function EditBook() {
       formData.append("condition", bookData.condition);
       formData.append("price", bookData.price);
       formData.append("description", bookData.description);
+      formData.append("pickupAddress",bookData.pickupAddress);
 
       if (bookImage) {
         formData.append("bookImage", bookImage);
@@ -84,7 +142,7 @@ function EditBook() {
 
       await updateBook(id, formData);
 
-      alert("Book Updated Successfully!");
+      toast.success("Book Updated Successfully!");
 
       navigate("/my-books");
 
@@ -92,7 +150,7 @@ function EditBook() {
 
       console.log(error);
 
-      alert(
+      toast.error(
         error.response?.data?.message ||
         "Failed to update book."
       );
@@ -165,6 +223,23 @@ function EditBook() {
           onChange={handleChange}
           required
         />
+        
+        <input
+         type="text"
+         name="pickupAddress"
+         placeholder="Pickup Address"
+         value={bookData.pickupAddress}
+         onChange={handleChange}
+         required
+         />
+         
+         <button
+         type="button"
+         className="location-btn"
+         onClick={handleCurrentLocation}
+          >
+        📍 Use Current Location
+        </button>
 
         <textarea
           name="description"

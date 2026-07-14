@@ -34,6 +34,8 @@ function Login() {
         "user",
         JSON.stringify(data.user)
       );
+
+      localStorage.setItem("loginTime", Date.now().toString());
       toast.success("Login Successful!");
 
       setFormData({
